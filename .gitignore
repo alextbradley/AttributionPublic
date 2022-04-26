@@ -1,0 +1,17 @@
+# no container images
+*.img 
+
+# no run files
+wavi_cases/**/run/*
+
+# no source files
+**/src
+
+# no permanent checkpoints
+*.jld2
+
+#no slurm output
+*.out
+
+#no times files
+times

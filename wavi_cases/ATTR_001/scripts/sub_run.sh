@@ -4,7 +4,7 @@
 ./prep_run.sh
 
 # set job id
-JOBNO=915
+JOBNO=001
 
 # record start times
 TIMEQSTART="$(date +%s)"

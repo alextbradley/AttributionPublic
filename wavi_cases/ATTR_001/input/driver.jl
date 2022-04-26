@@ -64,9 +64,6 @@ read!("accumulation.bin",accumulation)
 accumulation.=ntoh.(accumulation)
 
 weertman_c = 368.0
-#weertman_c =Array{Float64}(undef,nx,ny);
-#read!("weertman_c.bin",weertman_c)
-#weertman_c.=ntoh.(weertman_c)
 
 glen_a_ref =Array{Float64}(undef,nx,ny);
 read!("glen_a_ref.bin",glen_a_ref)
@@ -107,7 +104,7 @@ params = Params(accumulation_rate = accumulation,
 #                            ref_time = ref_time,
 #                            Ta = Ta,
 #                            Sa = Sa,
-#                            γT = 1.21*1e-3,
+#                            γT = 1.1*1e-3,
 #			    melt_partial_cell = true);
 
 #
@@ -124,8 +121,8 @@ model = Model(grid = grid,
 #timestepping parameters
 #
 niter0 = 0
-dt = 0.02
-end_time = 200.
+dt = 0.01
+end_time = 500.
 chkpt_freq = 10.
 pchkpt_freq = 10.
 timestepping_params = TimesteppingParams(niter0 = niter0, 
