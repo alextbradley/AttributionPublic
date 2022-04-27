@@ -4,13 +4,13 @@ function driver()
 #
 #Grid and boundary conditions
 #
-nx = 150
-ny = 25
+nx = 300
+ny = 50
 nσ = 4
 x0 = 0.0
 y0 = -25000.0
-dx = 2000.0
-dy = 2000.0
+dx = 1000.0
+dy = 1000.0
 h_mask=trues(nx,ny)
 
 #
@@ -104,7 +104,7 @@ params = Params(accumulation_rate = accumulation,
 #                            ref_time = ref_time,
 #                            Ta = Ta,
 #                            Sa = Sa,
-#                            γT = 1.1*1e-3,
+#                            γT = 1.21*1e-3,
 #			    melt_partial_cell = true);
 
 #
@@ -121,8 +121,8 @@ model = Model(grid = grid,
 #timestepping parameters
 #
 niter0 = 0
-dt = 0.01
-end_time = 500.
+dt = 0.010
+end_time = 250.
 chkpt_freq = 10.
 pchkpt_freq = 10.
 timestepping_params = TimesteppingParams(niter0 = niter0, 
@@ -139,6 +139,7 @@ outputs = (h = model.fields.gh.h,
            v = model.fields.gh.v,
            b = model.fields.gh.b,
            s = model.fields.gh.s,
+	   a = model.fields.gh.accumulation,
            grfrac = model.fields.gh.grounded_fraction,
            m = model.fields.gh.basal_melt)
 
