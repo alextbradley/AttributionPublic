@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JOBNO=912
+JOBNO=666
 
 # move to run directory
 cd ../run
