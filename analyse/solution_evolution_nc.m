@@ -1,14 +1,12 @@
-%Plot the evolution of a solution when files are listed as an ncfile
+%Basic case analysis script
 
 %% Preliminaries
 clear
 addpath('../plot_tools');
 %% Case info
 %specify case NB: check grid resolution
-folder = "../wavi_cases/ATTR_941/run/";
+folder = "/data/icesheet_output/aleey/wavi/ATTR_12002/run/";
 fname = strcat(folder,'outfile.nc');
-dx = 4000;dy = 4000;
-dx = 2000; dy = 2000;
 dx = 1000; dy = 1000;
 
 %% plot flags
@@ -16,7 +14,7 @@ grv_plot   = 1; %grounded fraction, mean melt and total melt flux as a function 
 slice_plot = 1; %slice taken along the centreline
 gl_pos_plot= 1; %plot bathymetry and contour of grounding line
 melt_vid   = 0; %video of melting profile
-vel_plot   = 0; %contourf of velocity at final time
+vel_plot   = 1; %contourf of velocity at final time
 xgl_plot   = 1; %line plot of centreline gl position as a function of time
 
 numplot = 1;
@@ -169,8 +167,9 @@ end
 %% Plot the velocities at final timestep
 if vel_plot
     figure(numplot); clf; hold on;
-    vv = squeeze(v(:,:,end));
-    uu = squeeze(u(:,:,end));
+    idx = floor(length(time)/2);
+    vv = squeeze(v(:,:,idx));
+    uu = squeeze(u(:,:,idx));
     vel = sqrt(uu.^2 + vv.^2);
     contourf(x/1e3, y/1e3, vel', 20, 'linestyle', 'none');
     xlabel('x (km)');
