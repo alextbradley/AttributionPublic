@@ -5,7 +5,7 @@ clear
 addpath('../plot_tools');
 %% Case info
 %specify case NB: check grid resolution
-folder = "/data/icesheet_output/aleey/wavi/ATTR_12002/run/";
+folder = "/data/icesheet_output/aleey/wavi/ATTR_10002/run/";
 fname = strcat(folder,'outfile.nc');
 dx = 1000; dy = 1000;
 
