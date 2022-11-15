@@ -108,7 +108,13 @@ for j = 1:sz(2)
 	vv = cell2mat(vaf(i,j));
 	volume_change = vv(1) - vv; 
 	SLR = volume_change / 395 / 1e9; %SLR in mm
+	if j > 1
+	p = plot(tt,SLR,'linewidth', 1.25, 'HandleVisibility', 'off');
+	else
 	p = plot(tt,SLR,'linewidth', 1.25);
+
+	end
+
 	p.Color = [colmap(i,:),0.5];
 end
 end
@@ -122,7 +128,8 @@ ax(2) = gca;
 ax(2).FontSize = ax(1).FontSize;
 ax(2).YLim = [-1,25];
 grid on
-
+l = legend('no trend', 'anthropogenic trend');
+l.Location = 'northwest';
 
 fig = gcf;
-fig.Position(3:4) = [950, 400];
+fig.Position(3:4) = [950, 360];

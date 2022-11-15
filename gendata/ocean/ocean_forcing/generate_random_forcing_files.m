@@ -9,7 +9,9 @@
 %%% 
 
 clear
+addpath('..') %need for the profile functions
 %% Input parameters
+N0 = 1; 	    %Index of first forcing file
 N  = 20;             %Number of forcing files
 dt = 0.1;           %timestep of output
 r = 0.8;            %autocorrelation of red noise
@@ -19,26 +21,26 @@ t_end = 200;        %end time
 t = 0:dt:t_end;     %reference time points
 depth = 0:10:1000;  %reference depth points
 
-pc_inc_per_century =  50;      %specify how much the pycnocline mean depth increases per century if anthropogenic applied 
+pc_inc_per_century =  -100;      %specify how much the pycnocline mean depth increases per century if anthropogenic applied 
 
-for iN = 1:N
-    %make natural files 
-    folder = strcat("./natural_random_forcing/random_forcing_", num2str(iN), "/");
-     if ~exist(folder, 'dir'); mkdir(folder); end
-    
-    % Parameters of profile
-    pc = pyc_mean + pyc_amp*generate_random_forcing_anomaly(t,r);  %pycnocline center
-        
-    pw = 400*ones(length(t));                 %pycnocline width  (same size as time)  
-    % constant upper and lower temperatures and salinities
-    tl = 1.2;
-    tu = -1;
-    sl = 34.6;
-    su = 34.0;
-    
-    % Generate profiles
-    ta = ambient_profile(pc, pw, -depth, tl, tu);
-    sa = ambient_profile(pc, pw, -depth, sl, su);
+for iN = N0:(N0 + N-1);
+  %  %make natural files 
+  %  folder = strcat("./natural_random_forcing/random_forcing_", num2str(iN), "/");
+  %   if ~exist(folder, 'dir'); mkdir(folder); end
+  %  
+  %  % Parameters of profile
+  %  pc = pyc_mean + pyc_amp*generate_random_forcing_anomaly(t,r);  %pycnocline center
+  %     
+  %  pw = 400*ones(length(t));                 %pycnocline width  (same size as time)  
+  %  % constant upper and lower temperatures and salinities
+  %  tl = 1.2;
+  %  tu = -1;
+  %  sl = 34.6;
+  %  su = 34.0;
+  %  
+  %  % Generate profiles
+  %%  ta = ambient_profile(pc, pw, -depth, tl, tu);
+  %  sa = ambient_profile(pc, pw, -depth, sl, su);
     
 %    % Make video
 %     figure(1); clf;
@@ -56,41 +58,47 @@ for iN = 1:N
 %     end
     
     
-    % Save files
-    acc = 'real*8';
-    
-    %reference time
-    fname_out = strcat(folder, 'ref_time.bin');
-    fid=fopen(fname_out,'w','b');
-    fwrite(fid,t,acc);fclose(fid);
-    
-    %reference depth
-    fname_out = strcat(folder, 'ref_depth.bin');
-    fid=fopen(fname_out,'w','b');
-    fwrite(fid,depth,acc);fclose(fid);
-    
-    %reference ambient temp
-    fname_out = strcat(folder, 'forcing_ambient_temperature.bin');
-    fid=fopen(fname_out,'w','b');
-    fwrite(fid,ta,acc);fclose(fid);
-    
-    %reference ambient salt
-    fname_out = strcat(folder, 'forcing_ambient_salinity.bin');
-    fid=fopen(fname_out,'w','b');
-    fwrite(fid,sa,acc);fclose(fid);
-    
-    %save mat files of the pycnocline centre
-    save(strcat(folder, 'anomaly.mat'), 't', 'pc');
-    
-    %pause
-    
-    %make anthropognic files 
+   % % Save files
+   %acc = 'real*8';
+   % 
+   % %reference time
+   % fname_out = strcat(folder, 'ref_time', num2str(iN), '.bin');
+   % fid=fopen(fname_out,'w','b');
+   % fwrite(fid,t,acc);fclose(fid);
+   % 
+   % %reference depth
+   % fname_out = strcat(folder, 'ref_depth', num2str(iN), '.bin');
+   % fid=fopen(fname_out,'w','b');
+   % fwrite(fid,depth,acc);fclose(fid);
+   % 
+   % %reference ambient temp
+   % fname_out = strcat(folder, 'forcing_ambient_temperature', num2str(iN), '.bin');
+   % fid=fopen(fname_out,'w','b');
+   % fwrite(fid,ta,acc);fclose(fid);
+   % 
+   % %reference ambient salt
+   % fname_out = strcat(folder, 'forcing_ambient_salinity', num2str(iN), '.bin');
+   % fid=fopen(fname_out,'w','b');
+   % fwrite(fid,sa,acc);fclose(fid);
+   % 
+   % %save mat files of the pycnocline centre
+   % save(strcat(folder, 'anomaly.mat'), 't', 'pc');
+   % 
+   % %pause
+   % 
+    %make trended files 
     folder = strcat("./anthropogenic_random_forcing/random_forcing_", num2str(iN), "/");
-    if ~exist(folder, 'dir'); mkdir(folder); end
 
-      
+    folder = ['./A', num2str(pyc_amp), '_T', num2str(pc_inc_per_century)];
+    if ~exist(folder, 'dir'); mkdir(folder); end %make the trend, amplitude folder
+    folder = strcat(folder,"/random_forcing_", num2str(iN), "/");
+
+    if ~exist(folder, 'dir'); mkdir(folder); end %make the subforcing folder
+
+
     % Parameters of profile
-    pc = pc +  pc_inc_per_century*(t'/100); %add the anthropogenic contribution  
+    pc = pyc_mean + pyc_amp*generate_random_forcing_anomaly(t,r);  %pycnocline center no trend
+    pc = pc +  pc_inc_per_century*(t'/100); %add the trend
     pw = 400*ones(length(t));                 %pycnocline width  (same size as time)  
     
     % constant upper and lower temperatures and salinities
@@ -108,22 +116,22 @@ for iN = 1:N
     acc = 'real*8';
     
     %reference time
-    fname_out = strcat(folder, 'ref_time.bin');
+    fname_out = strcat(folder, 'ref_time', num2str(iN), '.bin');
     fid=fopen(fname_out,'w','b');
     fwrite(fid,t,acc);fclose(fid);
     
     %reference depth
-    fname_out = strcat(folder, 'ref_depth.bin');
+    fname_out = strcat(folder, 'ref_depth', num2str(iN), '.bin');
     fid=fopen(fname_out,'w','b');
     fwrite(fid,depth,acc);fclose(fid);
     
     %reference ambient temp
-    fname_out = strcat(folder, 'forcing_ambient_temperature.bin');
+    fname_out = strcat(folder, 'forcing_ambient_temperature', num2str(iN), '.bin');
     fid=fopen(fname_out,'w','b');
     fwrite(fid,ta,acc);fclose(fid);
     
     %reference ambient salt
-    fname_out = strcat(folder, 'forcing_ambient_salinity.bin');
+    fname_out = strcat(folder, 'forcing_ambient_salinity', num2str(iN), '.bin');
     fid=fopen(fname_out,'w','b');
     fwrite(fid,sa,acc);fclose(fid);
     
@@ -131,35 +139,4 @@ for iN = 1:N
     save(strcat(folder, 'anomaly.mat'), 't', 'pc');
     
 end
-%% Functions
-function va = ambient_profile(pc, pw, z, vl, vu)
-%loop over
-va = zeros(length(pc), length(z));
-for i = 1:length(pc) %loop over time points
-    for j = 1:length(z) %loop over grid points
-        
-        va(i,j) = pointwise_ambient_profile(pc(i), pw(i), z(j), vl, vu);
-        
-    end
-end
-end
-
-
-function va = pointwise_ambient_profile(pc, pw, z, vl, vu)
-%return the ambient value at a depth z with the pycnocline centre at pc,
-%width pw
-d_low = pc - pw/2;
-d_hi  = pc + pw/2;
-if z< d_low
-    va = vl;
-    
-elseif z > d_hi
-    va = vu;
-    
-else
-    va = vl + (vu - vl)/(d_hi - d_low) * (z - d_low);
-    
-end
-end
-
 
